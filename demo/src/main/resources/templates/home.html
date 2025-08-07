@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Budget | College Money Manager</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --dark-bg: #121212;
+            --darker-bg: #0a0a0a;
+            --card-bg: #1e1e1e;
+            --primary: #7e57c2;
+            --primary-dark: #5e35b1;
+            --primary-light: #b39ddb;
+            --accent: #ff4081;
+            --text: #e0e0e0;
+            --text-secondary: #b0b0b0;
+            --positive: #66bb6a;
+            --negative: #ef5350;
+            --border: #333333;
+            --warning: #ffa726;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--dark-bg), var(--darker-bg));
+            color: var(--text);
+            min-height: 100vh;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo-icon {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .logo-text h1 {
+            font-size: 28px;
+            font-weight: 700;
+            background: linear-gradient(to right, var(--primary), #d1c4e9);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .logo-text p {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .app-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+        }
+
+        @media (max-width: 768px) {
+            .app-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border);
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .card-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .card-icon {
+            background: rgba(126, 87, 194, 0.2);
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+        }
+
+        /* Balance Section */
+        .balance-section {
+            grid-column: span 2;
+            text-align: center;
+        }
+
+        .balance-amount {
+            font-size: 48px;
+            font-weight: 700;
+            margin: 15px 0;
+            background: linear-gradient(to right, var(--text), #d1c4e9);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .balance-stats {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-top: 20px;
+        }
+
+        .balance-stat {
+            text-align: center;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 5px;
+        }
+
+        .stat-value {
+            font-size: 22px;
+            font-weight: 600;
+        }
+
+        .positive {
+            color: var(--positive);
+        }
+
+        .negative {
+            color: var(--negative);
+        }
+
+        /* Transactions Section */
+        .transactions {
+            max-height: 300px;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+
+        .transactions::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .transactions::-webkit-scrollbar-track {
+            background: rgba(255,255,255,0.05);
+            border-radius: 10px;
+        }
+
+        .transactions::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 10px;
+        }
+
+        .transaction-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 10px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.03);
+            transition: background 0.3s;
+        }
+
+        .transaction-item:hover {
+            background: rgba(126, 87, 194, 0.1);
+        }
+
+        .transaction-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+
+        .transaction-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .transaction-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(126, 87, 194, 0.2);
+            color: var(--primary);
+        }
+
+        .transaction-details h4 {
+            font-size: 16px;
+            margin-bottom: 4px;
+        }
+
+        .transaction-details p {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .transaction-amount {
+            font-weight: 600;
+            font-size: 18px;
+        }
+
+        /* Form Section */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 14px;
+            border-radius: 12px;
+            background: #2a2a2a;
+            border: 1px solid var(--border);
+            color: var(--text);
+            font-size: 16px;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(126, 87, 194, 0.3);
+        }
+
+        .btn {
+            padding: 14px;
+            border-radius: 12px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            font-size: 16px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            margin-top: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(126, 87, 194, 0.4);
+        }
+
+        /* Budget Categories */
+        .budget-categories {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+        }
+
+        .category {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            background: #2a2a2a;
+            border-radius: 12px;
+            gap: 10px;
+            transition: transform 0.3s;
+        }
+
+        .category:hover {
+            transform: translateX(5px);
+        }
+
+        .category-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(126, 87, 194, 0.2);
+            color: var(--primary);
+        }
+
+        .category-info {
+            flex: 1;
+        }
+
+        .category-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+        }
+
+        .category-name {
+            font-size: 16px;
+        }
+
+        .category-amount {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: #333;
+            border-radius: 4px;
+            margin-top: 5px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            border-radius: 4px;
+            background: var(--primary);
+        }
+
+        footer {
+            text-align: center;
+            padding: 30px 0;
+            color: var(--text-secondary);
+            font-size: 14px;
+            margin-top: 40px;
+            border-top: 1px solid var(--border);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 30px;
+            color: var(--text-secondary);
+        }
+
+        .empty-state i {
+            font-size: 48px;
+            margin-bottom: 15px;
+            color: var(--primary-light);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <div class="logo-text">
+                    <h1>Student Budget</h1>
+                    <p>Smart money management for college life</p>
+                </div>
+            </div>
+            <div class="user-info">
+                <div class="balance-mini">
+                    <div class="stat-label">Available Balance</div>
+                    <div class="stat-value">₹1,245.50</div>
+                </div>
+            </div>
+        </header>
+
+        <div class="app-container">
+            <!-- Balance Summary -->
+            <div class="card balance-section">
+                <div class="card-header">
+                    <div class="card-title">Current Balance</div>
+                    
+                </div>
+                <div class="balance-amount">₹1,245.50</div>
+                <div class="balance-stats">
+                    <div class="balance-stat">
+                        <div class="stat-label">Monthly Income</div>
+                        <div class="stat-value positive">₹1,850.00</div>
+                    </div>
+                    <div class="balance-stat">
+                        <div class="stat-label">Monthly Expenses</div>
+                        <div class="stat-value negative">₹604.50</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Budget Categories -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">Budget Categories</div>
+                    
+                </div>
+                <div class="budget-categories">
+                    <div class="category">
+                        <div class="category-info">
+                            <div class="category-header">
+                                <div class="category-name">Food & Dining</div>
+                                <div class="category-amount">₹215/₹300</div>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 72%"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="category">
+                        <div class="category-info">
+                            <div class="category-header">
+                                <div class="category-name">Books & Supplies</div>
+                                <div class="category-amount">₹145/₹200</div>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 73%"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="category">
+                        <div class="category-info">
+                            <div class="category-header">
+                                <div class="category-name">Transportation</div>
+                                <div class="category-amount">₹45/₹60</div>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 75%"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="category">
+                        <div class="category-info">
+                            <div class="category-header">
+                                <div class="category-name">Housing</div>
+                                <div class="category-amount">₹450/₹500</div>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 90%"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="category">
+                        <div class="category-info">
+                            <div class="category-header">
+                                <div class="category-name">Entertainment</div>
+                                <div class="category-amount">₹60/₹100</div>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 60%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- New Transaction -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">New Transaction</div>
+                </div>
+                <form>
+                    <div class="form-group">
+                        <label for="description">Description</label>
+                        <input type="text" id="description" placeholder="Lunch, books, etc.">
+                    </div>
+                    <div class="form-group">
+                        <label for="amount">Amount</label>
+                        <input type="number" id="amount" placeholder="0.00" step="0.01">
+                    </div>
+                    <div class="form-group">
+                        <label for="type"> Type</label>
+                        <select id="type">
+                            <option value="expense">Expense</option>
+                            <option value="income">Income</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="category">Category</label>
+                        <select id="category">
+                            <option value="food">Food & Dining</option>
+                            <option value="books">Books & Supplies</option>
+                            <option value="transport">Transportation</option>
+                            <option value="housing">Housing</option>
+                            <option value="tuition">Tuition & Fees</option>
+                            <option value="entertainment">Entertainment</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    <button type="button" class="btn">
+                        Add Transaction
+                    </button>
+                </form>
+            </div>
+    </div>
+
+    <script>
+        // Simple JavaScript for form interaction
+        document.querySelector('.btn').addEventListener('click', function() {
+            const description = document.getElementById('description').value;
+            const amount = document.getElementById('amount').value;
+            const type = document.getElementById('type').value;
+            const category = document.getElementById('category').value;
+            
+            if(description && amount) {
+                alert(`Transaction added!\n₹{description}: ₹₹{amount} (₹{type}, ₹{category})`);
+                document.querySelector('form').reset();
+            } else {
+                alert('Please fill in all fields');
+            }
+        });
+    </script>
+</body>
+</html>
