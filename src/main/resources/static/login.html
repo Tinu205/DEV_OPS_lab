@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,18 +13,19 @@
         }
 
         :root {
-            --dark-bg: #121212;
-            --darker-bg: #0a0a0a;
-            --card-bg: #1e1e1e;
-            --primary: #7e57c2;
-            --primary-dark: #5e35b1;
-            --text: #e0e0e0;
-            --text-secondary: #b0b0b0;
-            --border: #333333;
+            --light-bg: #f8f9fa;
+            --lighter-bg: #ffffff;
+            --card-bg: #ffffff;
+            --primary: #4a6fdc;
+            --primary-dark: #3a5fc8;
+            --text: #2d3748;
+            --text-secondary: #718096;
+            --border: #e2e8f0;
+            --error: #e53e3e;
         }
 
         body {
-            background: linear-gradient(135deg, var(--dark-bg), var(--darker-bg));
+            background: linear-gradient(135deg, var(--light-bg), #edf2f7);
             color: var(--text);
             min-height: 100vh;
             display: flex;
@@ -42,7 +43,7 @@
             background: var(--card-bg);
             border-radius: 16px;
             padding: 40px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
             border: 1px solid var(--border);
         }
 
@@ -54,10 +55,7 @@
         .logo h1 {
             font-size: 28px;
             font-weight: 700;
-            background: linear-gradient(to right, var(--primary), #d1c4e9);
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
+            color: var(--primary);
             margin-bottom: 5px;
         }
 
@@ -75,22 +73,24 @@
             margin-bottom: 8px;
             color: var(--text-secondary);
             font-size: 14px;
+            font-weight: 500;
         }
 
         input {
             width: 100%;
             padding: 14px;
             border-radius: 12px;
-            background: #2a2a2a;
+            background: var(--light-bg);
             border: 1px solid var(--border);
             color: var(--text);
             font-size: 16px;
+            transition: all 0.2s ease;
         }
 
         input:focus {
             outline: none;
             border-color: var(--primary);
-            box-shadow: 0 0 0 2px rgba(126, 87, 194, 0.3);
+            box-shadow: 0 0 0 3px rgba(74, 111, 220, 0.15);
         }
 
         .btn {
@@ -108,8 +108,8 @@
         }
 
         .btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(126, 87, 194, 0.4);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(74, 111, 220, 0.25);
         }
 
         .footer-links {
@@ -122,32 +122,21 @@
         .footer-links a {
             color: var(--primary);
             text-decoration: none;
+            font-weight: 500;
         }
 
         .footer-links a:hover {
             text-decoration: underline;
         }
 
-        .divider {
-            display: flex;
-            align-items: center;
-            margin: 20px 0;
-            color: var(--text-secondary);
+        .error-message {
+            color: var(--error);
+            text-align: center;
+            margin-top: 15px;
             font-size: 14px;
-        }
-
-        .divider::before, .divider::after {
-            content: "";
-            flex: 1;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .divider::before {
-            margin-right: 10px;
-        }
-
-        .divider::after {
-            margin-left: 10px;
+            padding: 10px;
+            border-radius: 8px;
+            background-color: rgba(229, 62, 62, 0.1);
         }
     </style>
 </head>
@@ -156,26 +145,27 @@
         <div class="login-card">
             <div class="logo">
                 <h1>Student Budget</h1>
-                <p>Manage your college finances</p>
+                <p>Sign in to your account</p>
             </div>
 
-            <form action="/login" method="POST">
+            <form th:action="@{/login}" method="post">
                 <div class="form-group">
-                    <label for="username">Username or Email</label>
-                    <input type="text" id="username" name="username" placeholder="user@gmail.com" required>
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" autofocus="autofocus" placeholder="Enter your username" required />
                 </div>
 
                 <div class="form-group">
                     <label for="password">Password</label>
-                    <input type="password" id="password" name="password" placeholder="********" required>
+                    <input type="password" id="password" name="password" placeholder="Enter your password" required />
                 </div>
 
                 <button type="submit" class="btn">Log In</button>
 
+                <p th:if="${error}" th:text="${error}"></p>
             </form>
 
             <div class="footer-links">
-                <a href="/src/main/resources/static/signup.html">Create account</a>
+                Don't have an account? <a th:href="@{/register}">Register now</a>
             </div>
         </div>
     </div>
